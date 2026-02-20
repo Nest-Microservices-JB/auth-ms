@@ -16,3 +16,9 @@ copiamos la carpeta de config de orders-ms a auth-ms
 en main creamos la configuracion de nuestro microservicios
 
 copiamos docker ignore y dockerfile para poner este microservice en la misma red que los demas
+
+instalamos class-validator y clkass- transformer
+
+yarn add class-validator class-transformer
+creamos los dtos
+agregamos el pipe validator y modificamos los controladores
