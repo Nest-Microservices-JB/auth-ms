@@ -51,3 +51,6 @@ y luego devolvemos el signJwt al usuario
 
 lo p[odemos parsear en
 https://www.jwt.io/ para ver el; contenido del payload
+
+vamos a validar el token
+y si esta todo ok, lo renovamos

@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { LoginUserDto, RegisterUserDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { envs } from 'src/config';
 
 @Injectable()
 export class AuthService extends PrismaClient implements OnModuleInit {
@@ -23,6 +24,27 @@ export class AuthService extends PrismaClient implements OnModuleInit {
     //tenemos que invocarlo cada vez que el usuario se registre o inicie sesión correctamente para generar un token válido
     async signJWT(payload: JwtPayload) {
       return this.jwtService.sign(payload);
+    }
+
+    async verifyToken(token: string) {
+      try {
+        //extraemos el sub, iat y exp del token para no devolverlos al cliente, el resto de los datos del usuario los devolvemos. Esto seria el payload del token
+        const {sub, iat, exp, ...user} = this.jwtService.verify(token, {
+          secret: envs.jwtSecret, //esto es necesario para verificar que el token fue firmado con la misma clave secreta que usamos para firmarlo en el método signJWT
+        });
+
+        return {
+          user: user,
+          token: await this.signJWT(user) //esto es necesario para renovar el token cada vez que el usuario lo verifique, así evitamos que el token caduque y el usuario tenga que iniciar sesión nuevamente cada cierto tiempo. El nuevo token tendrá una nueva fecha de expiración.
+         };
+      }
+      catch(error) {
+        console.log(error);
+        throw new RpcException({
+          status: 401,
+          message: 'Token not valid',
+        })
+      }
     }
 
     async registerUser(registerUserDto: RegisterUserDto) {
@@ -101,5 +123,5 @@ export class AuthService extends PrismaClient implements OnModuleInit {
           message: error.message,
         })
       }
-    }
+    }   
 }
