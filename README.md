@@ -22,3 +22,15 @@ instalamos class-validator y clkass- transformer
 yarn add class-validator class-transformer
 creamos los dtos
 agregamos el pipe validator y modificamos los controladores
+
+Aprovisionar base de datos mongo db usando mongo db atlas
+Instalamos prisma
+prisma es una dependencia de desarrollo
+yarn add prisma -D
+luego npx prisma init
+esto en nuestro microservices coloca la variable en .env DATABASE_URL para copnectar a una base de datos postgres
+reemplamos el valor por el de mongodb
+creamos el model en prisma schema
+
+Generamos el cliente
+npx prisma generate
