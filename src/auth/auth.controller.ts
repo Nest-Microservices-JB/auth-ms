@@ -1,7 +1,8 @@
 import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import { LoginUserDto, RegisterUserDto } from './dto';
+import { catchError } from 'rxjs';
 
 @Controller()
 export class AuthController {
@@ -9,8 +10,7 @@ export class AuthController {
 
   @MessagePattern('auth.register.user')
   registerUser(@Payload() registerUserDto: RegisterUserDto) {
-    //return this.authService.registerUser(data.email, data.password);
-    return registerUserDto;
+    return this.authService.registerUser(registerUserDto)
   }
 
   @MessagePattern('auth.login.user')

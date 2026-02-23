@@ -34,3 +34,4 @@ creamos el model en prisma schema
 
 Generamos el cliente
 npx prisma generate
+
