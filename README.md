@@ -35,3 +35,9 @@ creamos el model en prisma schema
 Generamos el cliente
 npx prisma generate
 
+encriptar contrase;a
+instlamos bcrypt
+yarn add bcrypt
+importamos la libreria en el service, seguramente pida instlaar types/bcrypt
+
+hasheamos la password al crear un usuario nuevo
