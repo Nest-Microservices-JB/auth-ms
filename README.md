@@ -41,3 +41,13 @@ yarn add bcrypt
 importamos la libreria en el service, seguramente pida instlaar types/bcrypt
 
 hasheamos la password al crear un usuario nuevo
+
+instalamos jwt
+yarn add @nestjs/jwt
+
+importamos el modulo de jwt
+lo iniciamlizamos en ell contructor del servicio
+y luego devolvemos el signJwt al usuario
+
+lo p[odemos parsear en
+https://www.jwt.io/ para ver el; contenido del payload

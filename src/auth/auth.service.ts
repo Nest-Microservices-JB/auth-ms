@@ -3,14 +3,26 @@ import { RpcException } from '@nestjs/microservices';
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto, RegisterUserDto } from './dto';
+import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthService extends PrismaClient implements OnModuleInit {
     private readonly logger = new Logger("AuthService");
   
+    constructor(private readonly jwtService: JwtService) {
+      super(); //esto es necesario para que el PrismaClient se inicialice correctamente
+    }
+
     onModuleInit() {
       this.$connect();
       this.logger.log('MongoDB Connected to the database');
+    }
+
+    //este método se encarga de generar un token JWT a partir de un payload
+    //tenemos que invocarlo cada vez que el usuario se registre o inicie sesión correctamente para generar un token válido
+    async signJWT(payload: JwtPayload) {
+      return this.jwtService.sign(payload);
     }
 
     async registerUser(registerUserDto: RegisterUserDto) {
@@ -37,11 +49,11 @@ export class AuthService extends PrismaClient implements OnModuleInit {
         });
 
         //devolvemos todos los datos del usuario excepto la contraseña
-        const {password: hashedPassword, ...rest} = newUser;
+        const {password: hashedPassword, createdAt: cA, updatedAt: uA, ...rest} = newUser;
 
         return {
           user: rest,
-          token: 'ABC'
+          token: await this.signJWT(rest),
         };
       } catch (error) {
         throw new RpcException({
@@ -77,11 +89,11 @@ export class AuthService extends PrismaClient implements OnModuleInit {
         }
 
         //devolvemos todos los datos del usuario excepto la contraseña
-        const {password: hashedPassword, ...rest} = user;
+        const {password: hashedPassword, createdAt: cA, updatedAt: uA, ...rest} = user;
 
         return {
           user: rest,
-          token: 'ABC'
+          token: await this.signJWT(rest)
         };
       } catch (error) {
         throw new RpcException({
